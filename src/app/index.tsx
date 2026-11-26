@@ -1,98 +1,161 @@
-import * as Device from 'expo-device';
-import { Platform, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  SafeAreaView,
+} from "react-native";
+import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 
-import { AnimatedIcon } from '@/components/animated-icon';
-import { HintRow } from '@/components/hint-row';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { WebBadge } from '@/components/web-badge';
-import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+export default function SplashScreen() {
+  const router = useRouter();
 
-function getDevMenuHint() {
-  if (Platform.OS === 'web') {
-    return <ThemedText type="small">use browser devtools</ThemedText>;
-  }
-  if (Device.isDevice) {
-    return (
-      <ThemedText type="small">
-        shake device or press <ThemedText type="code">m</ThemedText> in terminal
-      </ThemedText>
-    );
-  }
-  const shortcut = Platform.OS === 'android' ? 'cmd+m (or ctrl+m)' : 'cmd+d';
   return (
-    <ThemedText type="small">
-      press <ThemedText type="code">{shortcut}</ThemedText>
-    </ThemedText>
-  );
-}
+    <SafeAreaView style={styles.container}>
+      <View style={styles.content}>
+        <View style={styles.logoRow}>
+          <View style={styles.logoBadge}>
+            <Ionicons name="sync-outline" size={24} color="#0D5C36" />
+          </View>
+          <Text style={styles.logoText}>loop</Text>
+        </View>
 
-export default function HomeScreen() {
-  return (
-    <ThemedView style={styles.container}>
-      <SafeAreaView style={styles.safeArea}>
-        <ThemedView style={styles.heroSection}>
-          <AnimatedIcon />
-          <ThemedText type="title" style={styles.title}>
-            Welcome to&nbsp;Expo
-          </ThemedText>
-        </ThemedView>
+        <Text style={styles.title}>
+          TECNOLOGIA{"\n"}AMBIENTAL{"\n"}PARA CIDADES{"\n"}INTELIGENTES
+        </Text>
 
-        <ThemedText type="code" style={styles.code}>
-          get started
-        </ThemedText>
+        <Text style={styles.subtitle}>
+          Dê o destino correto aos seus resíduos. Faça a diferença, perto de
+          casa.
+        </Text>
 
-        <ThemedView type="backgroundElement" style={styles.stepContainer}>
-          <HintRow
-            title="Try editing"
-            hint={<ThemedText type="code">src/app/index.tsx</ThemedText>}
-          />
-          <HintRow title="Dev tools" hint={getDevMenuHint()} />
-          <HintRow
-            title="Fresh start"
-            hint={<ThemedText type="code">npm run reset-project</ThemedText>}
-          />
-        </ThemedView>
+        <View style={styles.locationTag}>
+          <Ionicons name="location-outline" size={16} color="#A7E3C0" />
+          <Text style={styles.locationText}>
+            Feito para um Brasil mais verde
+          </Text>
+        </View>
+      </View>
 
-        {Platform.OS === 'web' && <WebBadge />}
-      </SafeAreaView>
-    </ThemedView>
+      <View style={styles.footer}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push("/login" as any)}
+        >
+          <Ionicons name="arrow-forward" size={18} color="#0D5C36" />
+          <Text style={styles.buttonText}>ENTRAR</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity onPress={() => router.push("/login" as any)}>
+          <Text style={styles.loginLink}>
+            Já faz parte do Green Code? Faça login
+          </Text>
+        </TouchableOpacity>
+      </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    flexDirection: 'row',
+    backgroundColor: "#0D5C36",
+    justifyContent: "space-between",
+    padding: 24,
   },
-  safeArea: {
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    alignItems: 'center',
-    gap: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
-    maxWidth: MaxContentWidth,
+  content: {
+    marginTop: 40
   },
-  heroSection: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-    paddingHorizontal: Spacing.four,
-    gap: Spacing.four,
+  logoRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 32
+  },
+  logoBadge: {
+    backgroundColor: "#8CE0B0",
+    padding: 8,
+    borderRadius: 12,
+    marginRight: 10,
+  },
+  logoText: {
+    color: "#FFF",
+    fontSize: 28,
+    fontWeight: "bold"
   },
   title: {
-    textAlign: 'center',
+    color: "#FFF",
+    fontSize: 34,
+    fontWeight: "900",
+    lineHeight: 40,
+    marginBottom: 20,
   },
-  code: {
-    textTransform: 'uppercase',
+  subtitle: {
+    color: "#D1F2DF",
+    fontSize: 16,
+    lineHeight: 24,
+    marginBottom: 24,
   },
-  stepContainer: {
-    gap: Spacing.three,
-    alignSelf: 'stretch',
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.four,
-    borderRadius: Spacing.four,
+  locationTag: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6
+  },
+  locationText: {
+    color: "#A7E3C0",
+    fontSize: 13
+  },
+  footer: {
+    marginBottom: 20,
+    alignItems: "center",
+    gap: 16
+  },
+  button: {
+    backgroundColor: "#8CE0B0",
+    width: "100%",
+    paddingVertical: 16,
+    borderRadius: 12,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 8,
+  },
+  buttonText: {
+    color: "#0D5C36",
+    fontWeight: "bold",
+    fontSize: 16
+  },
+  loginLink: {
+    color: "#D1F2DF",
+    fontSize: 13
   },
 });
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+  
+    
+    
+    
+  
+    
+    
+    
+  
+    
+    
+  
