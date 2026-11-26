@@ -11,7 +11,7 @@ import {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFocusEffect, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
-import { Ecoponto } from '../../data/ecopontos';
+import { Ecoponto } from '../../types/models';
 
 const STORAGE_KEY = '@reciclaspot:favoritos';
 

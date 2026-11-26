@@ -7,34 +7,53 @@ import {
   TextInput,
   SafeAreaView,
   ScrollView,
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { usuarioService } from '../services/api';
+import { validarEmail } from '../utils/validacoes';
 
-type Perfil = 'cidadao' | 'voluntario';
+const Icon = Ionicons as any;
 
 export default function LoginScreen() {
   const router = useRouter();
-  const [perfil, setPerfil] = useState<Perfil>('cidadao');
+  const [perfil, setPerfil] = useState<'cidadao' | 'voluntario'>('cidadao');
+  const [nome, setNome] = useState('Sofia Martins');
   const [email, setEmail] = useState('sofia.martins@email.com');
   const [senha, setSenha] = useState('1234567890');
+  const [enviando, setEnviando] = useState(false);
 
-  const handleLogin = () => {
-    router.replace('/(tabs)/explorar' as any);
+  const handleEntrar = async () => {
+    if (!validarEmail(email)) {
+      Alert.alert(
+        'E-mail inválido',
+        'Por favor, digite um endereço de e-mail válido.'
+      );
+      return;
+    }
+
+    try {
+      setEnviando(true);
+      await usuarioService.cadastrar({ nome, email, perfil });
+      router.replace('/(tabs)/explorar' as any);
+    } catch (error) {
+      Alert.alert(
+        'Erro de conexão',
+        'Não foi possível salvar seu cadastro na API agora. Tente novamente.'
+      );
+    } finally {
+      setEnviando(false);
+    }
   };
-
-  const isCidadao = perfil === 'cidadao';
-  const isVoluntario = perfil === 'voluntario';
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView
-        contentContainerStyle={styles.scroll}
-        keyboardShouldPersistTaps="handled"
-      >
+      <ScrollView contentContainerStyle={styles.scroll}>
         <View style={styles.logoRow}>
           <View style={styles.logoBadge}>
-            <Ionicons name="sync-outline" size={20} color="#FFF" />
+            <Icon name="sync-outline" size={20} color="#FFF" />
           </View>
           <Text style={styles.logoText}>loop</Text>
         </View>
@@ -44,14 +63,13 @@ export default function LoginScreen() {
 
         <View style={styles.roleRow}>
           <TouchableOpacity
-            style={[styles.roleCard, isCidadao && styles.roleCardActive]}
+            style={[styles.roleCard, perfil === 'cidadao' && styles.roleCardActive]}
             onPress={() => setPerfil('cidadao')}
-            activeOpacity={0.8}
           >
             <View style={styles.roleHeader}>
-              <Ionicons name="person-outline" size={20} color="#0D5C36" />
-              <Ionicons
-                name={isCidadao ? 'checkmark-circle' : 'ellipse-outline'}
+              <Icon name="person-outline" size={20} color="#0D5C36" />
+              <Icon
+                name={perfil === 'cidadao' ? 'checkmark-circle' : 'ellipse-outline'}
                 size={18}
                 color="#0D5C36"
               />
@@ -63,14 +81,13 @@ export default function LoginScreen() {
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={[styles.roleCard, isVoluntario && styles.roleCardActive]}
+            style={[styles.roleCard, perfil === 'voluntario' && styles.roleCardActive]}
             onPress={() => setPerfil('voluntario')}
-            activeOpacity={0.8}
           >
             <View style={styles.roleHeader}>
-              <Ionicons name="heart-outline" size={20} color="#555" />
-              <Ionicons
-                name={isVoluntario ? 'checkmark-circle' : 'ellipse-outline'}
+              <Icon name="heart-outline" size={20} color="#555" />
+              <Icon
+                name={perfil === 'voluntario' ? 'checkmark-circle' : 'ellipse-outline'}
                 size={18}
                 color="#555"
               />
@@ -80,6 +97,13 @@ export default function LoginScreen() {
           </TouchableOpacity>
         </View>
 
+        <Text style={styles.label}>Nome Completo</Text>
+        <TextInput
+          style={styles.input}
+          value={nome}
+          onChangeText={setNome}
+        />
+
         <Text style={styles.label}>Email</Text>
         <TextInput
           style={styles.input}
@@ -87,8 +111,6 @@ export default function LoginScreen() {
           onChangeText={setEmail}
           keyboardType="email-address"
           autoCapitalize="none"
-          autoCorrect={false}
-          placeholder="seu@email.com"
         />
 
         <Text style={styles.label}>Sua Senha</Text>
@@ -97,47 +119,25 @@ export default function LoginScreen() {
           value={senha}
           onChangeText={setSenha}
           secureTextEntry
-          placeholder="Digite sua senha"
         />
 
         <TouchableOpacity
           style={styles.submitBtn}
-          onPress={handleLogin}
-          activeOpacity={0.85}
+          onPress={handleEntrar}
+          disabled={enviando}
         >
-          <Ionicons name="arrow-forward" size={18} color="#FFF" />
-          <Text style={styles.submitBtnText}>
-            {isCidadao ? 'Entrar como cidadão' : 'Entrar como voluntário'}
-          </Text>
-        </TouchableOpacity>
-
-        <Text style={styles.orText}>ou</Text>
-
-        <TouchableOpacity
-          style={styles.socialBtn}
-          onPress={handleLogin}
-          activeOpacity={0.8}
-        >
-          <Ionicons name="logo-apple" size={20} color="#000" />
-          <Text style={styles.socialText}>Continuar com Apple</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.socialBtn}
-          onPress={handleLogin}
-          activeOpacity={0.8}
-        >
-          <Ionicons name="mail-outline" size={20} color="#0D5C36" />
-          <Text style={styles.socialText}>Continuar com Email</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={styles.socialBtn}
-          onPress={handleLogin}
-          activeOpacity={0.8}
-        >
-          <Ionicons name="logo-windows" size={20} color="#0078D4" />
-          <Text style={styles.socialText}>Continuar com Microsoft</Text>
+          {enviando ? (
+            <ActivityIndicator color="#FFF" />
+          ) : (
+            <>
+              <Icon name="arrow-forward" size={18} color="#FFF" />
+              <Text style={styles.submitBtnText}>
+                {perfil === 'cidadao'
+                  ? 'Entrar como cidadão'
+                  : 'Entrar como voluntário'}
+              </Text>
+            </>
+          )}
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -239,32 +239,4 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 16,
   },
-  orText: {
-    textAlign: 'center',
-    color: '#888',
-    marginVertical: 16,
-  },
-  socialBtn: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 10,
-    backgroundColor: '#FFF',
-    borderWidth: 1,
-    borderColor: '#DCE3DF',
-    padding: 14,
-    borderRadius: 12,
-    marginBottom: 10,
-  },
-  socialText: {
-    fontWeight: '600',
-    color: '#1A241E',
-  },
 });
-    
-        
-        
-        
-    
-        
-        

@@ -66,12 +66,12 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   content: {
-    marginTop: 40
+    marginTop: 40,
   },
   logoRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 32
+    marginBottom: 32,
   },
   logoBadge: {
     backgroundColor: "#8CE0B0",
@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
   logoText: {
     color: "#FFF",
     fontSize: 28,
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   title: {
     color: "#FFF",
@@ -100,16 +100,16 @@ const styles = StyleSheet.create({
   locationTag: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 6
+    gap: 6,
   },
   locationText: {
     color: "#A7E3C0",
-    fontSize: 13
+    fontSize: 13,
   },
   footer: {
     marginBottom: 20,
     alignItems: "center",
-    gap: 16
+    gap: 16,
   },
   button: {
     backgroundColor: "#8CE0B0",
@@ -124,38 +124,10 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#0D5C36",
     fontWeight: "bold",
-    fontSize: 16
+    fontSize: 16,
   },
   loginLink: {
     color: "#D1F2DF",
-    fontSize: 13
+    fontSize: 13,
   },
 });
-    
-  
-    
-    
-    
-  
-    
-    
-    
-  
-    
-    
-    
-  
-    
-    
-  
-    
-    
-    
-  
-    
-    
-    
-  
-    
-    
-  
